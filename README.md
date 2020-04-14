@@ -21,4 +21,6 @@
 ![app2](https://user-images.githubusercontent.com/62214506/79222880-4cae3900-7e93-11ea-867b-50cbbdaf8c3e.png)
 
 ### WEB
+![web1](https://user-images.githubusercontent.com/62214506/79223749-e7f3de00-7e94-11ea-8f59-c3030950c37f.png)
+![web2](https://user-images.githubusercontent.com/62214506/79223751-e88c7480-7e94-11ea-8d12-22124dc54a4b.png)
 ![web](https://user-images.githubusercontent.com/62214506/79222890-5041c000-7e93-11ea-8630-b4ce43c51ca9.png)
