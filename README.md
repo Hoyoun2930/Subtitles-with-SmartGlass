@@ -1,33 +1,22 @@
 # Subtitles-with-SmartGlass
  
 ## Abstract
-어떤 이미지가 AR (Augmented Reality)로 생성된 것인지 아닌지 구분하는 것은 까다로운 일이다. AR로 생성된 이미지는 가상의 물체를 현실 세계에 투영한 것이라 판단의 기준이 될 레퍼런스 이미지가 없기 때문이다. 본 연구는 이 문제를 해결고자 새로운 AR 이미지 판별 모델을 제안한다. 이 모델은 기존의 이미지 판별에 사용되던 CNN (Convolution Neural Network) 모델과 본 연구에서 새로이 제안하는 HNN (Histogram Neural Network) 모델을 앙상블 하여 구현되었다. 모델을 학습시키기 위하여 250장의 AR 이미지와 250장의 일반 이미지를 세그먼테이션 하여 데이터를 생성했으며, 해당 데이터를 통하여 모델을 학습시킨 결과 84.0%의 높은 정확도를 보였다. 
+영화 및 공연의 자막 제공 실태에는 몇 가지 문제점이 있다. 우선 청각장애인이나 국내에 거주하지만 한국어에 능숙하지 않은 외국인을 위한 자막을 제공하는 공연이나 영화가 많이 부족하다. 또한 공연의 경우에는 공연장 내의 스크린에 자막을 제공하는 경우가 많은데, 이 때 관객은 자막과 공연을 함께 보는 것에 불편함을 느낀다. 
+
+본 프로젝트는 이를 해결하기 위해 스마트 글래스를 이용해 자막을 제공해 보고자 하였다. 애플리케이션을 이용하면 하나의 시스템으로 여러 언어의 자막을 제공할 수 있으며, 스마트 글래스를 이용하면 안경 렌즈에 있는 디스플레이에 자막이 나타나기 때문에 관객이 자막을 보기 위해 무대에서 시선을 돌려야 하는 불편함이 사라진다.
 
 ## Method
 ![method](https://user-images.githubusercontent.com/62214506/79222866-48821b80-7e93-11ea-8257-3999bf1fb169.png)
 
-본 연구에서 제안한 모델의 전체적인 구성은 그림과 같다. 먼저 데이터 전처리 과정을 통해서 생성된 Train Data Set을 이용하여 CNN모델과 HNN 모델을 각각 학습한다. 그리고 학습된 두개의 모델을 이용하여 Ensembled Model을 구성한다.
+본 연구에서 제안한 모델의 전체적인 구성은 그림과 같다. 
 
-### CNN (Convolution Neural Network)
-![image](https://user-images.githubusercontent.com/62214506/78421533-5cf43600-7693-11ea-9335-67bcff85eb97.png)
-![image](https://user-images.githubusercontent.com/62214506/78421535-5e256300-7693-11ea-9b3f-6b23708768ae.png)
+스마트 글래스를 이용해 자막을 출력하기 위해서는 자막 파일을 저장 및 관리하고 앱으로 전송하는 기능을 지닌 서버와 해당 자막 파일을 전송받아 이를 파싱하고 출력하는 기능을 지닌 안드로이드 앱. 
 
-연구의 목표 정확도와 학습 시간 등을 고려하였을 때 과도한 Deep Layer 구조는 불필요하다고 생각하여 3개의 Convolution Layer를 비롯한 Shallow Network로 구성하였다. 본 연구의 목표는 입력된 이미지가 AR인지 Real 이미지인지 판별하는 것이므로 2-class classification을 수행하게 된다. 따라서 본 CNN 구현에는 Binary Classification을 상정하고 Parameter 및 Layer 배치를 진행하였다. 학습 이미지는 300x300 해상도로 리사이징 되어 CNN에 입력되고, 여러 필터 레이어를 거쳐 최종적으로 Fully Connect Layer에 의해 Binary 값이 결과로 출력된다. 
+영화관이나 극장의 관리자가 필요한 자막 파일을 업로드하고, 이를 관리하거나 실시간 자막을 제어할 수 있도록 인터페이스가 가능한 웹 페이지.
 
-### HNN (Histogram Neural Network)
-![image](https://user-images.githubusercontent.com/62214506/78421538-5fef2680-7693-11ea-8ee1-7aeb26b9e2bb.png)
+### Smart Glass
+![app](https://user-images.githubusercontent.com/62214506/79222878-4c15a280-7e93-11ea-89af-8cc4168bf347.png)
+![app2](https://user-images.githubusercontent.com/62214506/79222880-4cae3900-7e93-11ea-867b-50cbbdaf8c3e.png)
 
-HNN 모델은 오브젝트의 히스토그램 데이터와 오브젝트를 제외한 배경의 히스토그램 데이터를 학습을 위한 Train Data로 사용한다. HNN의 레이어는 총 2개의 2D Convolution Layer와 1개의 Fully-Connected Layer로 구성하였다.
-
-### Ensemble
-CNN과 HNN을 통하여 학습된 두 가지 모델은 각각의 특장점이 있다. 그래서 두 모델이 잘 구분해내는 AR 이미지의 특징이 다른데, 이 두 모델의 장점을 합쳐 발전시키고자, 본 연구에서는 가중치를 둔 보팅 (Weighted voting) [방법](http://doi.org/10.1109/IJCNN.2009.5178708)의 아이디어를 사용하였다. 
-
-## Result
-   |CNN|HNN|Ensemble
----|---|---|---|
-Validation Accuracy|57.9%|85.9%|84.0%|
-Validation Loss|6.5526|0.4223|   |
-Test Accuracy|66.9%|83.0%|   |
-Test Loss|5.0457|0.7677|   |
-
-이러한 결과는 히스토그램이 AR 이미지 고유의 특징을 더 잘 부각시켜 줄 수 있다는 점과, 학습 속도의 한계 때문에 CNN 모델의 레이어를 깊게 구성하지 못하여 성능의 한계를 들어낸 것으로 보인다. CNN 모델의 한계 때문에 보팅을 이용한 앙상블 기법 역시 HNN 모델을 단독으로 사용하는 경우보다 오히려 정확도가 약간 떨어지는 결과를 얻은 것으로 해석된다. CNN 모델을 개선한다면 보다 나은 성능의 AR 이미지 판별 모델을 구현할 수 있을 것으로 보인다.
+### WEB
+![web](https://user-images.githubusercontent.com/62214506/79222890-5041c000-7e93-11ea-8630-b4ce43c51ca9.png)
